@@ -11,7 +11,7 @@ opt.relativenumber = true
 -- Tabs & indentation
 opt.tabstop = 4
 opt.shiftwidth = 4
-opt.expandtab = true
+opt.expandtab = false
 opt.smartindent = true
 
 -- Search
@@ -64,6 +64,36 @@ map("n", "<leader>q", "<cmd>close<cr>", { desc = "Close split" })
 
 -- Save
 map("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+
+-- Toggle inlay hints (global)
+map("n", "<leader>ih", function()
+    local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+    vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+    vim.notify("Inlay hints " .. (enabled and "disabled" or "enabled"))
+end, { desc = "Toggle inlay hints" })
+
+-- Create Cargo.toml for standalone Rust files
+map("n", "<leader>rC", function()
+    local dir = vim.fn.expand("%:p:h")
+    local cargo_path = dir .. "/Cargo.toml"
+    if vim.fn.filereadable(cargo_path) == 1 then
+        vim.notify("Cargo.toml already exists", vim.log.levels.WARN)
+        return
+    end
+    local name = vim.fn.fnamemodify(dir, ":t"):gsub("[^%w_]", "_")
+    local content = string.format([[
+[package]
+name = "%s"
+version = "0.1.0"
+edition = "2021"
+]], name)
+    local f = io.open(cargo_path, "w")
+    if f then
+        f:write(content)
+        f:close()
+        vim.notify("Created Cargo.toml - restart LSP with :LspRestart")
+    end
+end, { desc = "Create Cargo.toml for standalone Rust" })
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

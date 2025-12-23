@@ -10,7 +10,7 @@
           n e o v i m   c o n f i g
 ```
 
-> *"Because real devs don't use IDEs"* - probably someone
+> Neovim 0.11+ config with native LSP, inlay hints, and modern tooling
 
 ---
 
@@ -18,11 +18,11 @@
 
 | Key | What it does |
 |-----|-------------|
-| `Space` | Leader key (the magic button) |
-| `Space w` | Save your masterpiece |
-| `Space ff` | Find files fast |
-| `Space gg` | Git goes brrrr (LazyGit) |
-| `-` | Browse files like a boss |
+| `Space` | Leader key |
+| `Space w` | Save file |
+| `Space ff` | Find files |
+| `Space gg` | LazyGit |
+| `Space -` | Toggle file explorer |
 
 ---
 
@@ -34,25 +34,13 @@
 |-----|--------|
 | `<leader>w` | Save file |
 | `<leader>ff` | Find files |
-| `<leader>fg` | Live grep (search text) |
+| `<leader>fg` | Live grep |
 | `<leader>fb` | List buffers |
 | `<leader>fr` | Recent files |
 | `<leader>fh` | Help tags |
-| `<leader>fp` | Projects |
 | `<leader>ft` | Find TODOs |
-| `-` | File browser |
-
-### File Browser (Telescope)
-
-| Key | Action |
-|-----|--------|
-| `<CR>` | Open file / Enter directory |
-| `<Backspace>` | Go to parent directory |
-| `c` / `<C-c>` | Create file/folder |
-| `r` / `<C-r>` | Rename |
-| `d` / `<C-d>` | Delete |
-| `y` / `<C-y>` | Copy |
-| `m` / `<C-x>` | Move |
+| `<leader>-` | Toggle file explorer |
+| `<leader>o` | Focus file explorer |
 
 ### Buffers
 
@@ -76,23 +64,46 @@
 
 ---
 
-### LSP (the smart stuff)
+## LSP
+
+### Navigation
 
 | Key | Action |
 |-----|--------|
-| `gd` | Go to definition (preview) |
+| `gd` | Go to definition |
 | `gD` | Go to declaration |
 | `gr` | Go to references |
 | `gi` | Go to implementation |
 | `K` | Hover documentation |
+| `<leader>D` | Type definition |
+
+### Actions
+
+| Key | Action |
+|-----|--------|
 | `<leader>ca` | Code action |
 | `<leader>rn` | Rename symbol |
-| `<leader>D` | Type definition |
-| `<leader>e` | Show diagnostic |
-| `[d` / `]d` | Prev/Next diagnostic |
 | `<leader>cf` | Format buffer |
+| `<leader>lr` | Restart LSP |
 
-### Diagnostics (Trouble)
+### Diagnostics
+
+| Key | Action |
+|-----|--------|
+| `gl` | Show diagnostic float |
+| `[d` | Previous diagnostic |
+| `]d` | Next diagnostic |
+| `<leader>q` | Diagnostics to loclist |
+
+### Inlay Hints
+
+| Key | Action |
+|-----|--------|
+| `<leader>ih` | Toggle inlay hints |
+
+Inlay hints show inline type annotations, parameter names, and more.
+
+### Trouble (Diagnostics List)
 
 | Key | Action |
 |-----|--------|
@@ -102,15 +113,61 @@
 | `<leader>xq` | Quickfix list |
 | `<leader>xt` | Todo list |
 
+### Symbols Outline
+
+| Key | Action |
+|-----|--------|
+| `<leader>cs` | Toggle symbols outline |
+
 ---
 
-### Git
+## Rust
+
+Full rust-analyzer support with clippy, inlay hints, and completions.
+
+| Key | Action |
+|-----|--------|
+| `<leader>rC` | Create Cargo.toml (for standalone files) |
+
+**Note:** rust-analyzer requires a Cargo project for full diagnostics. Use `<leader>rC` to create a `Cargo.toml` for standalone `.rs` files, then `:LspRestart`.
+
+---
+
+## Debugger (DAP)
+
+| Key | Action |
+|-----|--------|
+| `<leader>db` | Toggle breakpoint |
+| `<leader>dc` | Continue |
+| `<leader>di` | Step into |
+| `<leader>do` | Step over |
+| `<leader>dO` | Step out |
+| `<leader>dr` | Open REPL |
+| `<leader>dl` | Run last |
+| `<leader>du` | Toggle DAP UI |
+| `<leader>dt` | Terminate |
+
+---
+
+## Search & Replace (Spectre)
+
+| Key | Action |
+|-----|--------|
+| `<leader>sr` | Open search/replace |
+| `<leader>sw` | Search current word |
+| `<leader>sp` | Search in current file |
+
+---
+
+## Git
 
 | Key | Action |
 |-----|--------|
 | `<leader>gg` | Open LazyGit |
 
-### Terminal
+---
+
+## Terminal
 
 | Key | Action |
 |-----|--------|
@@ -121,11 +178,9 @@
 
 ---
 
-### Motion (Leap)
+## Motion & Editing
 
-```
-Press 's' + 2 chars = teleport
-```
+### Leap
 
 | Key | Action |
 |-----|--------|
@@ -141,12 +196,6 @@ Press 's' + 2 chars = teleport
 | `cs{old}{new}` | Change surround |
 | `ds{char}` | Delete surround |
 
-```
-ysiw"  →  "word"      (surround word with quotes)
-cs'"   →  "word"      (change ' to ")
-ds"    →  word        (delete quotes)
-```
-
 ### Comments
 
 | Key | Action |
@@ -161,15 +210,29 @@ ds"    →  word        (delete quotes)
 | `]t` | Next TODO |
 | `[t` | Previous TODO |
 
-### Sessions
+---
+
+## Sessions
 
 | Key | Action |
 |-----|--------|
-| `<leader>ss` | Restore session |
-| `<leader>sl` | Restore last session |
-| `<leader>sd` | Don't save session |
+| `<leader>qs` | Restore session |
+| `<leader>ql` | Restore last session |
+| `<leader>qd` | Don't save session |
 
-### Misc
+---
+
+## Folds
+
+| Key | Action |
+|-----|--------|
+| `zR` | Open all folds |
+| `zM` | Close all folds |
+| `zK` | Peek folded lines |
+
+---
+
+## Misc
 
 | Key | Action |
 |-----|--------|
@@ -177,21 +240,52 @@ ds"    →  word        (delete quotes)
 
 ---
 
-## Dashboard
+## Languages Supported
 
-```
-┌──────────────────────────────────┐
-│  f  Find file                    │
-│  e  New file                     │
-│  r  Recent files                 │
-│  g  Find text                    │
-│  b  File browser                 │
-│  c  Config                       │
-│  m  Mason (LSP installer)        │
-│  l  Lazy (plugins)               │
-│  q  Quit                         │
-└──────────────────────────────────┘
-```
+| Language | LSP | Formatter | Debugger | Inlay Hints |
+|----------|-----|-----------|----------|-------------|
+| Rust | rust_analyzer | rustfmt | - | Yes |
+| Python | pyright | black, isort | debugpy | Yes |
+| Go | gopls | gofmt, goimports | delve | Yes |
+| TypeScript/JS | ts_ls | prettier | node-debug2 | Yes |
+| C/C++ | clangd | clang-format | - | Yes |
+| Lua | lua_ls | stylua | - | Yes |
+| TOML | taplo | taplo | - | - |
+
+---
+
+## Features
+
+- **Native LSP** (Neovim 0.11+) - Fast, native language server support
+- **Inlay Hints** - Inline type annotations for all languages
+- **LSP Signature** - Function signatures while typing
+- **Auto-save** - Files saved after 1 second of inactivity
+- **Auto-close Tags** - HTML/JSX tags automatically closed
+- **Format on Save** - Automatic formatting (silent on error)
+- **Snippets** - VSCode-compatible snippets via LuaSnip
+- **Inline Diagnostics** - Errors shown at end of lines
+
+---
+
+## Plugin Stack
+
+- **Package Manager:** lazy.nvim
+- **Theme:** Catppuccin Mocha
+- **File Explorer:** nvim-tree
+- **File Finder:** Telescope + fzf
+- **LSP:** Native vim.lsp + Mason
+- **Completion:** nvim-cmp + LuaSnip + lspkind
+- **Signature Help:** lsp_signature.nvim
+- **Syntax:** Treesitter
+- **Git:** Gitsigns + LazyGit
+- **Motion:** Leap
+- **Debugger:** nvim-dap + dap-ui
+- **Search/Replace:** Spectre
+- **Diagnostics:** Trouble
+- **Symbols:** outline.nvim
+- **Sessions:** persistence.nvim
+- **Folds:** nvim-ufo
+- **Lua Dev:** lazydev.nvim
 
 ---
 
@@ -201,33 +295,11 @@ ds"    →  word        (delete quotes)
 |---------|--------|
 | `:Mason` | Manage LSP servers |
 | `:Lazy` | Manage plugins |
-| `:ColorizerToggle` | Toggle color highlighting |
+| `:LspInfo` | LSP status |
+| `:LspRestart` | Restart LSP |
 | `:ConformInfo` | Formatter info |
-
----
-
-## Languages Supported
-
-| Language | LSP | Formatter |
-|----------|-----|-----------|
-| Python | pyright | black, isort |
-| Go | gopls | gofmt, goimports |
-| TypeScript/JS | ts_ls | prettier |
-| C/C++ | clangd | clang-format |
-| Lua | - | stylua |
-
----
-
-## Plugin Stack
-
-- **Package Manager:** lazy.nvim
-- **Theme:** Catppuccin Mocha
-- **File Finder:** Telescope
-- **LSP:** Native + Mason
-- **Completion:** nvim-cmp
-- **Syntax:** Treesitter
-- **Git:** Gitsigns + LazyGit
-- **Motion:** Leap
+| `:Outline` | Toggle symbols |
+| `:Trouble` | Diagnostics panel |
 
 ---
 
