@@ -516,12 +516,12 @@ type {}<T> = {{
 		)
 	),
 
-	-- Template Literal Type (FIXED HERE)
+	-- Template Literal Type (Correctly Escaped)
 	s(
 		"template",
 		fmt(
 			[[
-type {} = `{}${"{}"}`{};
+type {} = `{}${{{}}}`{};
 ]],
 			{
 				i(1, "TemplateType"),
