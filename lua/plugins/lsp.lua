@@ -259,6 +259,47 @@ return {
                 return vim.NIL
             end
 
+            -- Safe inlay hint handler to prevent out of range errors
+            local original_handler = vim.lsp.handlers["textDocument/inlayHint"]
+            vim.lsp.handlers["textDocument/inlayHint"] = function(err, result, ctx, config)
+                if err or not result then
+                    return original_handler and original_handler(err, result, ctx, config)
+                end
+
+                -- Filter out hints with invalid positions
+                local bufnr = ctx.bufnr or vim.api.nvim_get_current_buf()
+                if not vim.api.nvim_buf_is_valid(bufnr) then
+                    return
+                end
+
+                local filtered_result = {}
+                for _, hint in ipairs(result or {}) do
+                    local line = hint.position.line
+                    local char = hint.position.character
+
+                    -- Validate the position is within buffer bounds
+                    local ok = pcall(function()
+                        local line_count = vim.api.nvim_buf_line_count(bufnr)
+                        if line >= 0 and line < line_count then
+                            local line_content = vim.api.nvim_buf_get_lines(bufnr, line, line + 1, false)[1] or ""
+                            local line_len = #line_content
+                            if char >= 0 and char <= line_len then
+                                table.insert(filtered_result, hint)
+                            end
+                        end
+                    end)
+
+                    if not ok then
+                        -- Skip this hint if validation failed
+                    end
+                end
+
+                -- Call original handler with filtered results
+                if #filtered_result > 0 then
+                    return original_handler and original_handler(err, filtered_result, ctx, config)
+                end
+            end
+
             -- Enable all configured servers
             vim.lsp.enable({
                 "pyright",
@@ -279,9 +320,14 @@ return {
                         vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
                     end
 
-                    -- Enable inlay hints if supported
+                    -- Enable inlay hints if supported (with error handling)
                     if client and client.supports_method("textDocument/inlayHint") then
-                        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                        local ok, err = pcall(function()
+                            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+                        end)
+                        if not ok then
+                            vim.notify("Inlay hints error: " .. tostring(err), vim.log.levels.DEBUG)
+                        end
                     end
 
                     map("gd", vim.lsp.buf.definition, "Go to definition")
